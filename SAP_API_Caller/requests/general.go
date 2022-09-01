@@ -1,4 +1,4 @@
-package responses
+package requests
 
 type General struct {
 	ManufacturingOrder            string  `json:"ManufacturingOrder"`

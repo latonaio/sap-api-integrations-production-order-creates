@@ -4,7 +4,7 @@
 	"redis_key": "abcdefg",
 	"filepath": "/var/lib/aion/Data/rededge_sdc/abcdef.json",
 	"ProductionOrder": {
-		"ManufacturingOrder": "1000000",
+		"ManufacturingOrder": "",
 		"ManufacturingOrderCategory": "",
 		"ManufacturingOrderType": "",
 		"OrderIsCreated": "",
@@ -189,8 +189,8 @@
 			"MfgOrderItemActualDeviationQty": ""
 		}
 	},
-	"api_schema": "sap.s4.beh.productionorder.v1.ProductionOrder.Created.v1",
+	"api_schema": "SAPProductionOrderCreates",
 	"accepter": ["General"],
-	"production_order": "1000000",
+	"production_order": "",
 	"deleted": false
 }

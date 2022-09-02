@@ -37,9 +37,9 @@ accepter において 下記の例のように、データの種別（＝APIの�
 ここでは、"General" が指定されています。    
   
 ```
-	"api_schema": "sap.s4.beh.productionorder.v1.ProductionOrder.Created.v1",
+	"api_schema": "SAPProductionOrderCreates",
 	"accepter": ["General"],
-	"production_order": "1000000",
+	"production_order": "",
 	"deleted": false
 ```
   
@@ -48,9 +48,9 @@ accepter において 下記の例のように、データの種別（＝APIの�
 全データを取得する場合、sample.json は以下のように記載します。  
 
 ```
-	"api_schema": "sap.s4.beh.productionorder.v1.ProductionOrder.Created.v1",
+	"api_schema": "SAPProductionOrderCreates",
 	"accepter": ["All"],
-	"production_order": "1000000",
+	"production_order": "",
 	"deleted": false
 ```
 
@@ -65,7 +65,7 @@ func (c *SAPAPICaller) AsyncPostProductionOrder(
 	general *requests.General,
 	accepter []string) {
 	wg := &sync.WaitGroup{}
-	wg.Add(1)
+    wg.Add(len(accepter))
 	for _, fn := range accepter {
 		switch fn {
 		case "General":
@@ -88,8 +88,8 @@ func (c *SAPAPICaller) AsyncPostProductionOrder(
 以下の項目のうち、"XXXXX" ～ "XXXXX" は、/SAP_API_Output_Formatter/type.go 内 の Type Header {} による出力結果です。"cursor" ～ "time"は、golang-logging-library による 定型フォーマットの出力結果です。  
 
 ```
-	"cursor": "/Users/latona2/bitbucket/sap-api-integrations-creates/SAP_API_Caller/caller.go#L50",
-	"function": "sap-api-integrations-creates/SAP_API_Caller.(*SAPAPICaller).Header",
+	"cursor": "/Users/latona2/bitbucket/sap-api-integrations-production-order-creates/SAP_API_Caller/caller.go#L50",
+	"function": "sap-api-integrations-production-order-creates/SAP_API_Caller.(*SAPAPICaller).Header",
 	"level": "INFO",
 	"message": "[{XXXXXXXXXXXXXXXXXXXXXXXXXXXXX}]",
 	"time": "2021-12-11T15:33:00.054455+09:00"

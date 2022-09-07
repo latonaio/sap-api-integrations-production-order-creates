@@ -10,21 +10,21 @@ import (
 	"sync"
 
 	"github.com/latonaio/golang-logging-library-for-sap/logger"
-	sap_api_post_header_setup "github.com/latonaio/sap-api-post-header-setup"
+	sap_api_request_client_header_setup "github.com/latonaio/sap-api-request-client-header-setup"
 	"golang.org/x/xerrors"
 )
 
 type SAPAPICaller struct {
 	baseURL         string
 	sapClientNumber string
-	postClient      *sap_api_post_header_setup.SAPPostClient
+	requestClient   *sap_api_request_client_header_setup.SAPRequestClient
 	log             *logger.Logger
 }
 
-func NewSAPAPICaller(baseUrl, sapClientNumber string, postClient *sap_api_post_header_setup.SAPPostClient, l *logger.Logger) *SAPAPICaller {
+func NewSAPAPICaller(baseUrl, sapClientNumber string, requestClient *sap_api_request_client_header_setup.SAPRequestClient, l *logger.Logger) *SAPAPICaller {
 	return &SAPAPICaller{
 		baseURL:         baseUrl,
-		postClient:      postClient,
+		requestClient:   requestClient,
 		sapClientNumber: sapClientNumber,
 		log:             l,
 	}
@@ -32,6 +32,10 @@ func NewSAPAPICaller(baseUrl, sapClientNumber string, postClient *sap_api_post_h
 
 func (c *SAPAPICaller) AsyncPostProductionOrder(
 	general *requests.General,
+	item *requests.Item,
+	operation *requests.Operation,
+	component *requests.Component,
+	status *requests.Status,
 	accepter []string) {
 	wg := &sync.WaitGroup{}
 	wg.Add(len(accepter))
@@ -40,6 +44,26 @@ func (c *SAPAPICaller) AsyncPostProductionOrder(
 		case "General":
 			func() {
 				c.General(general)
+				wg.Done()
+			}()
+		case "Item":
+			func() {
+				c.Item(item)
+				wg.Done()
+			}()
+		case "Operation":
+			func() {
+				c.Operation(operation)
+				wg.Done()
+			}()
+		case "Component":
+			func() {
+				c.Component(component)
+				wg.Done()
+			}()
+		case "Status":
+			func() {
+				c.Status(status)
 				wg.Done()
 			}()
 		default:
@@ -66,7 +90,7 @@ func (c *SAPAPICaller) callProductionOrderSrvAPIRequirementGeneral(api string, g
 	}
 	url := strings.Join([]string{c.baseURL, "API_PRODUCTION_ORDER_2_SRV", api}, "/")
 	params := c.addQuerySAPClient(map[string]string{})
-	resp, err := c.postClient.POST(url, params, string(body))
+	resp, err := c.requestClient.Request("POST", url, params, string(body))
 	if err != nil {
 		return nil, xerrors.Errorf("API request error: %w", err)
 	}
@@ -77,6 +101,138 @@ func (c *SAPAPICaller) callProductionOrderSrvAPIRequirementGeneral(api string, g
 	}
 
 	data, err := sap_api_output_formatter.ConvertToGeneral(byteArray, c.log)
+	if err != nil {
+		return nil, xerrors.Errorf("convert error: %w", err)
+	}
+	return data, nil
+}
+
+func (c *SAPAPICaller) Item(item *requests.Item) {
+	outputDataItem, err := c.callProductionOrderSrvAPIRequirementItem("A_ProductionOrder_2", item)
+	if err != nil {
+		c.log.Error(err)
+		return
+	}
+	c.log.Info(outputDataItem)
+}
+
+func (c *SAPAPICaller) callProductionOrderSrvAPIRequirementItem(api string, item *requests.Item) (*sap_api_output_formatter.Item, error) {
+	body, err := json.Marshal(item)
+	if err != nil {
+		return nil, xerrors.Errorf("API request error: %w", err)
+	}
+	url := strings.Join([]string{c.baseURL, "API_PRODUCTION_ORDER_2_SRV", api}, "/")
+	params := c.addQuerySAPClient(map[string]string{})
+	resp, err := c.requestClient.Request("POST", url, params, string(body))
+	if err != nil {
+		return nil, xerrors.Errorf("API request error: %w", err)
+	}
+	defer resp.Body.Close()
+	byteArray, _ := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		return nil, xerrors.Errorf("bad response:%s", string(byteArray))
+	}
+
+	data, err := sap_api_output_formatter.ConvertToItem(byteArray, c.log)
+	if err != nil {
+		return nil, xerrors.Errorf("convert error: %w", err)
+	}
+	return data, nil
+}
+
+func (c *SAPAPICaller) Operation(operation *requests.Operation) {
+	outputDataOperation, err := c.callProductionOrderSrvAPIRequirementOperation("A_ProductionOrder_2", operation)
+	if err != nil {
+		c.log.Error(err)
+		return
+	}
+	c.log.Info(outputDataOperation)
+}
+
+func (c *SAPAPICaller) callProductionOrderSrvAPIRequirementOperation(api string, operation *requests.Operation) (*sap_api_output_formatter.Operation, error) {
+	body, err := json.Marshal(operation)
+	if err != nil {
+		return nil, xerrors.Errorf("API request error: %w", err)
+	}
+	url := strings.Join([]string{c.baseURL, "API_PRODUCTION_ORDER_2_SRV", api}, "/")
+	params := c.addQuerySAPClient(map[string]string{})
+	resp, err := c.requestClient.Request("POST", url, params, string(body))
+	if err != nil {
+		return nil, xerrors.Errorf("API request error: %w", err)
+	}
+	defer resp.Body.Close()
+	byteArray, _ := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		return nil, xerrors.Errorf("bad response:%s", string(byteArray))
+	}
+
+	data, err := sap_api_output_formatter.ConvertToOperation(byteArray, c.log)
+	if err != nil {
+		return nil, xerrors.Errorf("convert error: %w", err)
+	}
+	return data, nil
+}
+
+func (c *SAPAPICaller) Component(component *requests.Component) {
+	outputDataComponent, err := c.callProductionOrderSrvAPIRequirementComponent("A_ProductionOrder_2", component)
+	if err != nil {
+		c.log.Error(err)
+		return
+	}
+	c.log.Info(outputDataComponent)
+}
+
+func (c *SAPAPICaller) callProductionOrderSrvAPIRequirementComponent(api string, component *requests.Component) (*sap_api_output_formatter.Component, error) {
+	body, err := json.Marshal(component)
+	if err != nil {
+		return nil, xerrors.Errorf("API request error: %w", err)
+	}
+	url := strings.Join([]string{c.baseURL, "API_PRODUCTION_ORDER_2_SRV", api}, "/")
+	params := c.addQuerySAPClient(map[string]string{})
+	resp, err := c.requestClient.Request("POST", url, params, string(body))
+	if err != nil {
+		return nil, xerrors.Errorf("API request error: %w", err)
+	}
+	defer resp.Body.Close()
+	byteArray, _ := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		return nil, xerrors.Errorf("bad response:%s", string(byteArray))
+	}
+
+	data, err := sap_api_output_formatter.ConvertToComponent(byteArray, c.log)
+	if err != nil {
+		return nil, xerrors.Errorf("convert error: %w", err)
+	}
+	return data, nil
+}
+
+func (c *SAPAPICaller) Status(status *requests.Status) {
+	outputDataStatus, err := c.callProductionOrderSrvAPIRequirementStatus("A_ProductionOrder_2", status)
+	if err != nil {
+		c.log.Error(err)
+		return
+	}
+	c.log.Info(outputDataStatus)
+}
+
+func (c *SAPAPICaller) callProductionOrderSrvAPIRequirementStatus(api string, status *requests.Status) (*sap_api_output_formatter.Status, error) {
+	body, err := json.Marshal(status)
+	if err != nil {
+		return nil, xerrors.Errorf("API request error: %w", err)
+	}
+	url := strings.Join([]string{c.baseURL, "API_PRODUCTION_ORDER_2_SRV", api}, "/")
+	params := c.addQuerySAPClient(map[string]string{})
+	resp, err := c.requestClient.Request("POST", url, params, string(body))
+	if err != nil {
+		return nil, xerrors.Errorf("API request error: %w", err)
+	}
+	defer resp.Body.Close()
+	byteArray, _ := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		return nil, xerrors.Errorf("bad response:%s", string(byteArray))
+	}
+
+	data, err := sap_api_output_formatter.ConvertToStatus(byteArray, c.log)
 	if err != nil {
 		return nil, xerrors.Errorf("convert error: %w", err)
 	}

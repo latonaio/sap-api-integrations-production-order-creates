@@ -2,8 +2,8 @@ package requests
 
 type General struct {
 	ManufacturingOrder            string  `json:"ManufacturingOrder"`
-	ManufacturingOrderCategory    *string `json:"ManufacturingOrderCategory"`
-	ManufacturingOrderType        *string `json:"ManufacturingOrderType"`
+	ManufacturingOrderCategory    string `json:"ManufacturingOrderCategory"`
+	ManufacturingOrderType        string `json:"ManufacturingOrderType"`
 	OrderIsCreated                *string `json:"OrderIsCreated"`
 	OrderIsReleased               *string `json:"OrderIsReleased"`
 	OrderIsPrinted                *string `json:"OrderIsPrinted"`

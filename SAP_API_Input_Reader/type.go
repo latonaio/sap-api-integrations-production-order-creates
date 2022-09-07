@@ -59,8 +59,8 @@ type SDC struct {
 	Filepath        string `json:"filepath"`
 	ProductionOrder struct {
 		ManufacturingOrder            string  `json:"ManufacturingOrder"`
-		ManufacturingOrderCategory    *string `json:"ManufacturingOrderCategory"`
-		ManufacturingOrderType        *string `json:"ManufacturingOrderType"`
+		ManufacturingOrderCategory    string `json:"ManufacturingOrderCategory"`
+		ManufacturingOrderType        string `json:"ManufacturingOrderType"`
 		OrderIsCreated                *string `json:"OrderIsCreated"`
 		OrderIsReleased               *string `json:"OrderIsReleased"`
 		OrderIsPrinted                *string `json:"OrderIsPrinted"`
@@ -119,21 +119,19 @@ type SDC struct {
 		OrderLongText                 *string `json:"OrderLongText"`
 		Status                        struct {
 			StatusCode      string  `json:"StatusCode"`
-			IsUserStatus    *string `json:"IsUserStatus"`
+			IsUserStatus    bool    `json:"IsUserStatus"`
 			StatusShortName *string `json:"StatusShortName"`
 			StatusName      *string `json:"StatusName"`
 		} `json:"Status"`
 		Component struct {
-			ManufacturingOrderSequence     string  `json:"ManufacturingOrderSequence"`
-			ManufacturingOrderOperation    string  `json:"ManufacturingOrderOperation"`
-			OrderInternalBillOfOperations  string  `json:"OrderInternalBillOfOperations"`
+			ManufacturingOrderSequence     string `json:"ManufacturingOrderSequence"`
+			ManufacturingOrderOperation    string `json:"ManufacturingOrderOperation"`
+			OrderInternalBillOfOperations  string `json:"OrderInternalBillOfOperations"`
 			Reservation                    *string `json:"Reservation"`
 			ReservationItem                *string `json:"ReservationItem"`
 			MaterialGroup                  *string `json:"MaterialGroup"`
 			Material                       *string `json:"Material"`
 			Plant                          *string `json:"Plant"`
-			ManufacturingOrderCategory     *string `json:"ManufacturingOrderCategory"`
-			ManufacturingOrderType         *string `json:"ManufacturingOrderType"`
 			ProductionPlant                *string `json:"ProductionPlant"`
 			MatlCompRequirementDate        *string `json:"MatlCompRequirementDate"`
 			MatlCompRequirementTime        *string `json:"MatlCompRequirementTime"`
@@ -145,9 +143,9 @@ type SDC struct {
 			SalesOrderItem                 *string `json:"SalesOrderItem"`
 			SortField                      *string `json:"SortField"`
 			BillOfMaterialCategory         *string `json:"BillOfMaterialCategory"`
-			BOMItem                        string  `json:"BOMItem"`
+			BOMItem                        string `json:"BOMItem"`
 			BOMItemCategory                *string `json:"BOMItemCategory"`
-			BillOfMaterialItemNumber       *string `json:"BillOfMaterialItemNumber"`
+			BillOfMaterialItemNumber       string `json:"BillOfMaterialItemNumber"`
 			BOMItemDescription             *string `json:"BOMItemDescription"`
 			StorageLocation                *string `json:"StorageLocation"`
 			Batch                          *string `json:"Batch"`
@@ -178,14 +176,12 @@ type SDC struct {
 			WithdrawnQuantityAmount        *string `json:"WithdrawnQuantityAmount"`
 		} `json:"Component"`
 		Operation struct {
-			ManufacturingOrderSequence     string  `json:"ManufacturingOrderSequence"`
-			ManufacturingOrderOperation    *string `json:"ManufacturingOrderOperation"`
+			ManufacturingOrderSequence     string `json:"ManufacturingOrderSequence"`
+			ManufacturingOrderOperation    string `json:"ManufacturingOrderOperation"`
 			ManufacturingOrderSubOperation *string `json:"ManufacturingOrderSubOperation"`
 			OrderInternalBillOfOperations  string  `json:"OrderInternalBillOfOperations"`
 			OrderIntBillOfOperationsItem   string  `json:"OrderIntBillOfOperationsItem"`
 			MfgOrderSequenceText           *string `json:"MfgOrderSequenceText"`
-			ManufacturingOrderCategory     *string `json:"ManufacturingOrderCategory"`
-			ManufacturingOrderType         *string `json:"ManufacturingOrderType"`
 			MfgOrderOperationText          *string `json:"MfgOrderOperationText"`
 			OperationIsCreated             *string `json:"OperationIsCreated"`
 			OperationIsReleased            *string `json:"OperationIsReleased"`
@@ -220,8 +216,6 @@ type SDC struct {
 		} `json:"Operation"`
 		ProductionOrderItem struct {
 			ManufacturingOrderItem         string  `json:"ManufacturingOrderItem"`
-			ManufacturingOrderCategory     *string `json:"ManufacturingOrderCategory"`
-			ManufacturingOrderType         *string `json:"ManufacturingOrderType"`
 			IsCompletelyDelivered          *bool   `json:"IsCompletelyDelivered"`
 			Material                       *string `json:"Material"`
 			ProductionPlant                *string `json:"ProductionPlant"`

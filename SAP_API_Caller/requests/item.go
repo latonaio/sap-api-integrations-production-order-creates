@@ -3,8 +3,8 @@ package requests
 type Item struct {
 	ManufacturingOrder             string  `json:"ManufacturingOrder"`
 	ManufacturingOrderItem         string  `json:"ManufacturingOrderItem"`
-	ManufacturingOrderCategory     string `json:"ManufacturingOrderCategory"`
-	ManufacturingOrderType         string `json:"ManufacturingOrderType"`
+	ManufacturingOrderCategory     *string `json:"ManufacturingOrderCategory"`
+	ManufacturingOrderType         *string `json:"ManufacturingOrderType"`
 	IsCompletelyDelivered          *bool   `json:"IsCompletelyDelivered"`
 	Material                       *string `json:"Material"`
 	ProductionPlant                *string `json:"ProductionPlant"`
